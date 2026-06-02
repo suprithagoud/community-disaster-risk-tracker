@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Rain Alert & Safety App</title>
+
+<link rel="stylesheet" href="style.css" />
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+
+<body>
+
+<header>
+<div class="container">
+<div class="header-content">
+<div style="display:flex;align-items:center;gap:10px;width:100%;justify-content:space-between">
+
+<div style="display:flex;gap:12px;align-items:center">
+<div class="logo">
+<i class="fas fa-cloud-showers-heavy"></i> RainAlert
+</div>
+
+<nav>
+<ul>
+<li><a href="#dashboardSection" class="active">Dashboard</a></li>
+<li><a href="#alertsSection">Alerts</a></li>
+<li><a href="#emergencySection">Emergency</a></li>
+<li><a href="#communitySection">Community</a></li>
+<li><a href="#safetyTipsSection">Safety Tips</a></li>
+</ul>
+</nav>
+</div>
+
+<div style="display:flex;gap:10px;align-items:center">
+<div id="currentLocation">
+<i class="fas fa-map-marker-alt"></i>
+Detecting location...
+</div>
+
+<div style="display:flex;gap:6px">
+<button class="btn btn-outline" id="loginBtn">Login</button>
+<button class="btn btn-primary" id="registerBtn">Register</button>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+</header>
+
+<div class="container">
+
+<div class="main-content">
+
+<div>
+
+<!-- WEATHER -->
+<div class="card" id="dashboardSection">
+
+<div class="card-header">
+<h3 class="card-title">Weather Dashboard</h3>
+<div id="weatherSummary">Updating...</div>
+</div>
+
+<div class="weather-dashboard" id="weatherDashboard">
+<div class="spinner" id="weatherSpinner"></div>
+</div>
+
+</div>
+
+<!-- MAP -->
+<div class="card">
+
+<div class="card-header">
+<h3 class="card-title">Flood Risk Areas</h3>
+
+<div class="map-legend">
+<span style="color:red">
+<i class="fas fa-circle"></i> High Risk
+</span>
+
+<span style="color:#fbbc05;margin-left:10px">
+<i class="fas fa-circle"></i> Medium Risk
+</span>
+</div>
+
+</div>
+
+<div id="map"></div>
+
+</div>
+
+<!-- CONTACTS -->
+<div class="card" id="emergencySection">
+
+<div class="card-header">
+<h3 class="card-title">Emergency Contacts</h3>
+
+<div>
+<input
+type="text"
+id="contactSearch"
+class="form-input"
+placeholder="Search contacts..."
+style="padding:8px;border-radius:6px;border:1px solid #ddd"
+/>
+</div>
+
+</div>
+
+<div class="contacts-grid" id="contactsContainer">
+<div class="spinner"></div>
+</div>
+
+</div>
+
+<!-- COMMUNITY -->
+<div class="card" id="communitySection">
+
+<div class="card-header">
+<h3 class="card-title">Community Updates</h3>
+
+<div>
+<button class="btn btn-primary" id="newPostBtn">
+<i class="fas fa-plus"></i> New Post
+</button>
+</div>
+
+</div>
+
+<div id="postForm" style="display:none;margin-bottom:10px">
+
+<textarea
+id="postContent"
+class="post-input"
+placeholder="Share an update about your area..."
+></textarea>
+
+<div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px">
+<button class="btn btn-outline" id="cancelPost">Cancel</button>
+<button class="btn btn-primary" id="submitPost">Post</button>
+</div>
+
+</div>
+
+<div id="communityFeed">
+<div class="spinner"></div>
+</div>
+
+</div>
+
+</div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="alertsSection">
+
+<div class="card">
+
+<div class="card-header">
+<h3 class="card-title">Quick Actions</h3>
+</div>
+
+<ul class="quick-links">
+
+<li>
+<a href="#" id="alertPrefsLink">
+<i class="fas fa-bell"></i> Set Alert Preferences
+</a>
+</li>
+
+<li>
+<a href="#" id="safeRoutesLink">
+<i class="fas fa-map-marked-alt"></i> View Safe Routes
+</a>
+</li>
+
+<li>
+<a href="#" id="emergencyPrepLink">
+<i class="fas fa-first-aid"></i> Emergency Preparedness
+</a>
+</li>
+
+<li>
+<a href="#" id="downloadGuideLink">
+<i class="fas fa-download"></i> Download Safety Guide
+</a>
+</li>
+
+<li>
+<a href="#" id="volunteerLink">
+<i class="fas fa-users"></i> Volunteer Opportunities
+</a>
+</li>
+
+</ul>
+
+</div>
+
+<!-- SAFETY TIPS -->
+<div class="card" id="safetyTipsSection">
+
+<div class="card-header">
+<h3 class="card-title">Safety Tips</h3>
+</div>
+
+<div style="padding:8px;line-height:1.5">
+
+<div style="margin-bottom:10px">
+<b>Avoid Flooded Areas</b>
+<div style="color:var(--gray);font-size:0.95rem">
+Do not walk or drive through flood waters.
+</div>
+</div>
+
+<div style="margin-bottom:10px">
+<b>Emergency Kit</b>
+<div style="color:var(--gray);font-size:0.95rem">
+Keep water, food, medicines, documents.
+</div>
+</div>
+
+<div>
+<b>Stay Informed</b>
+<div style="color:var(--gray);font-size:0.95rem">
+Monitor weather & community alerts.
+</div>
+</div>
+
+</div>
+</div>
+
+</aside>
+
+</div>
+</div>
+
+<button onclick="topFunction()" id="backToTopBtn">
+<i class="fas fa-arrow-up"></i>
+</button>
+
+<div class="toast" id="toast">
+<i class="fas fa-check-circle"></i>
+<span id="toastMessage">Action completed</span>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script src="script.js"></script>
+
+</body>
+</html>
