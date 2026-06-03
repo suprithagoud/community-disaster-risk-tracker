@@ -537,6 +537,12 @@ function renderContacts(list){
 
         <div>${c.phone}</div>
 
+${c.distance ? `
+<div style="color:var(--primary);font-weight:600;margin-top:4px">
+📍 ${c.distance.toFixed(2)} km away
+</div>
+` : ''}
+
         <div class="contact-actions">
 
             <button
@@ -786,7 +792,375 @@ function setupEventListeners(){
         }
 
     };
+    
+
+}
+// =========================================================
+// LOGIN MODAL
+// =========================================================
+
+document.body.insertAdjacentHTML("beforeend", `
+
+<div class="custom-modal" id="loginModal">
+
+<div class="modal-box">
+
+<span class="close-btn" onclick="closeModal('loginModal')">&times;</span>
+
+<h2>Login</h2>
+
+<input type="email" id="loginEmail" placeholder="Enter Email" class="modal-input">
+
+<input type="password" id="loginPassword" placeholder="Enter Password" class="modal-input">
+
+<div class="modal-buttons">
+<button class="btn btn-outline" onclick="closeModal('loginModal')">Cancel</button>
+
+<button class="btn btn-primary" onclick="loginUser()">Login</button>
+</div>
+
+</div>
+</div>
+
+<div class="custom-modal" id="registerModal">
+
+<div class="modal-box">
+
+<span class="close-btn" onclick="closeModal('registerModal')">&times;</span>
+
+<h2>New Account Registration</h2>
+
+<input type="email" id="registerEmail" placeholder="Enter Email" class="modal-input">
+
+<input type="password" id="registerPassword" placeholder="Enter Password" class="modal-input">
+
+<div class="modal-buttons">
+<button class="btn btn-outline" onclick="closeModal('registerModal')">Cancel</button>
+
+<button class="btn btn-primary" onclick="registerUser()">Register</button>
+</div>
+
+</div>
+</div>
+
+<div class="custom-modal" id="alertModal">
+
+<div class="modal-box">
+
+<span class="close-btn" onclick="closeModal('alertModal')">&times;</span>
+
+<h2>🔔 Set Alert Preferences</h2>
+
+<label><input type="checkbox" checked> High Flood Risk Alerts</label><br><br>
+
+<label><input type="checkbox" checked> Heavy Rainfall Warnings</label><br><br>
+
+<label><input type="checkbox"> Localized Weather Updates</label><br><br>
+
+<label><input type="checkbox"> Shelter Opening Notifications</label><br><br>
+
+<div class="modal-buttons">
+<button class="btn btn-primary" onclick="saveAlertPrefs()">Save Preferences</button>
+</div>
+
+</div>
+</div>
+
+<div class="custom-modal" id="prepModal">
+
+<div class="modal-box">
+
+<span class="close-btn" onclick="closeModal('prepModal')">&times;</span>
+
+<h2>Emergency Preparedness</h2>
+
+<br>
+
+<h3>Emergency Preparedness Checklist</h3>
+
+<ul>
+<li>Emergency Kit</li>
+<li>Water</li>
+<li>Non-perishable food</li>
+<li>First aid kit</li>
+<li>Medicines</li>
+<li>Copies of documents</li>
+</ul>
+
+<br>
+
+<h3>Power</h3>
+
+<ul>
+<li>Fully charged phones</li>
+<li>Laptops and power banks</li>
+<li>Keep flashlights and extra batteries ready</li>
+</ul>
+
+<br>
+
+<h3>Evacuation Plan</h3>
+
+<ul>
+<li>Know your closest shelter shown on map</li>
+<li>Know your family meeting point</li>
+<li>Review homeowners/renters insurance</li>
+</ul>
+
+</div>
+</div>
+
+<div class="custom-modal" id="volunteerModal">
+
+<div class="modal-box">
+
+<span class="close-btn" onclick="closeModal('volunteerModal')">&times;</span>
+
+<h2>Volunteer Opportunities</h2>
+
+<p>Your help is valuable during the monsoon season. Join our efforts!</p>
+
+<input type="text" id="volunteerName" placeholder="Enter Your Name" class="modal-input">
+
+<select id="volunteerSkill" class="modal-input">
+
+<option>Logistics and Transport</option>
+
+<option>First Aid and Medical</option>
+
+<option>Shelter Management</option>
+
+<option>Community Awareness</option>
+
+</select>
+
+<div class="modal-buttons">
+
+<button class="btn btn-primary" onclick="submitVolunteer()">
+Submit Application
+</button>
+
+</div>
+
+</div>
+</div>
+
+`);
+
+// =========================================================
+// MODAL FUNCTIONS
+// =========================================================
+
+function openModal(id){
+
+document.getElementById(id).style.display = "flex";
 
 }
 
+window.closeModal = function(id){
+
+document.getElementById(id).style.display = "none";
+
+}
+
+// =========================================================
+// LOGIN
+// =========================================================
+
+window.loginUser = function(){
+
+const email = document.getElementById("loginEmail").value;
+
+if(email){
+
+localStorage.setItem("rainalertUser", email);
+
+document.getElementById("loginBtn").innerText =
+"Welcome";
+
+showToast("Login Successful");
+
+closeModal("loginModal");
+
+}
+
+}
+
+// =========================================================
+// REGISTER
+// =========================================================
+
+window.registerUser = function(){
+
+const email = document.getElementById("registerEmail").value;
+
+if(email){
+
+showToast("Registration Successful");
+
+closeModal("registerModal");
+
+}
+
+}
+
+// =========================================================
+// ALERT PREFS
+// =========================================================
+
+window.saveAlertPrefs = function(){
+
+showToast("Preferences Saved");
+
+closeModal("alertModal");
+
+}
+
+// =========================================================
+// VOLUNTEER
+// =========================================================
+
+window.submitVolunteer = function(){
+
+const name =
+document.getElementById("volunteerName").value;
+
+if(name){
+
+showToast("Volunteer Application Submitted");
+
+closeModal("volunteerModal");
+
+}
+
+}
+
+// =========================================================
+// SAFE ROUTES
+// =========================================================
+
+function showSafeRoutes(){
+
+if(!userCoords){
+
+showToast("Location not available");
+
+return;
+
+}
+
+shelters.forEach(s=>{
+
+L.polyline(
+[
+userCoords,
+[s.lat,s.lng]
+],
+{
+color:'green',
+weight:5
+}
+).addTo(map);
+
+});
+
+showToast("Safe routes displayed");
+
+}
+
+// =========================================================
+// SAFETY GUIDE PDF
+// =========================================================
+
+function downloadSafetyGuide(){
+
+const { jsPDF } = window.jspdf;
+
+const doc = new jsPDF();
+
+doc.setFontSize(18);
+
+doc.text("Rain Alert Monsoon Safety Guide", 20, 20);
+
+doc.setFontSize(12);
+
+doc.text("Emergency Kit Checklist", 20, 40);
+
+doc.text("- Water", 25, 50);
+
+doc.text("- Non-perishable food (3 days)", 25, 60);
+
+doc.text("- First aid kit and medicines", 25, 70);
+
+doc.text("- Flashlight and batteries", 25, 80);
+
+doc.text("- Important documents copies", 25, 90);
+
+doc.text("Safety Rules", 20, 120);
+
+doc.text("- Never walk or drive through floodwaters", 25, 130);
+
+doc.text("- Disconnect power if flood is imminent", 25, 140);
+
+doc.text("- Monitor local alerts", 25, 150);
+
+doc.save("RainAlert_Safety_Guide.pdf");
+
+}
+
+// =========================================================
+// BUTTON EVENTS
+// =========================================================
+
+document.getElementById("loginBtn").onclick = () => {
+
+openModal("loginModal");
+
+};
+
+document.getElementById("registerBtn").onclick = () => {
+
+openModal("registerModal");
+
+};
+
+document.getElementById("alertPrefsLink").onclick = (e) => {
+
+e.preventDefault();
+
+openModal("alertModal");
+
+};
+
+document.getElementById("safeRoutesLink").onclick = (e) => {
+
+e.preventDefault();
+
+showSafeRoutes();
+
+};
+
+document.getElementById("emergencyPrepLink").onclick = (e) => {
+
+e.preventDefault();
+
+openModal("prepModal");
+
+};
+
+document.getElementById("downloadGuideLink").onclick = (e) => {
+
+e.preventDefault();
+
+downloadSafetyGuide();
+
+};
+
+document.getElementById("volunteerLink").onclick = (e) => {
+
+e.preventDefault();
+
+openModal("volunteerModal");
+
+};
 })();
